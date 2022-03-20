@@ -53,6 +53,9 @@ def start(event={}, context={}):
     with open('config.json', 'r', encoding='utf-8') as f:
         config = json5.load(f)
 
+    print('Version:', config['version'])
+    print('Commit ID:', config['sha'])
+
     # 公共配置
     setting = config['setting']
 
