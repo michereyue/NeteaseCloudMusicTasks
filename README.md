@@ -15,7 +15,7 @@
 6. 音乐人自动完成任务，并领取云豆
 7. 自动领取 vip 成长值
 8. 多种[推送方式](#推送)
-9. 支持多账号
+9. 支持[多账号](#多账号)
 10. 支持[腾讯云函数](#一部署到腾讯云函数) & [青龙面板](#二部署到青龙面板) & [本地运行](#三本地运行) & [docker 部署](#四使用docker部署)
 
 > 开发不易，如果你觉得本项目对你有用，可以点个 star，也可以到底部给个[赞赏](#赞赏)
@@ -400,6 +400,7 @@ cookie 获取方式：首先在网页登录[网易云音乐](https://music.163.c
 5. [Telegram](https://telegram.org/)
 6. [Bark](https://github.com/Finb/Bark)
 7. [pushdeer](https://github.com/easychen/pushdeer)
+8. [wxpusher](https://wxpusher.zjiecode.com)
 
 要使用推送的话将相应的 `enable` 设为 `true`，并填写配置
 
@@ -499,12 +500,18 @@ cookie 获取方式：首先在网页登录[网易云音乐](https://music.163.c
     "Bark_url": "",
     /* Bark的API key */
     "Bark_key": "",
+    /* 铃声 */
+    "sound": "",
+    /* 消息分组 */
+    "group": "",
+    /* 图标链接 */
+    "icon": "",
     /* 是否将多个账号的信息合并推送, 建议为false，iOS推送消息过长可能会失败 */
     "merge": false
 }
 ```
 
-要使用 Bark 的话需要填写 `Bark_url` 和 `Bark_key`。可以使用 Bark 官方 API 或者自行搭建。
+要使用 Bark 的话需要填写 `Bark_url` 和 `Bark_key`，`sound`、`group` 和 `icon` 根据需要选填，如果不清楚如何填写就放空。可以使用 Bark 官方 API 或者自行搭建。
 
 ##### pushdeer
 
@@ -523,6 +530,23 @@ cookie 获取方式：首先在网页登录[网易云音乐](https://music.163.c
 ```
 
 要使用 pushdeer 的话需要填写 `pushkey`。如果使用自己搭建的服务器，请填写 `server`。
+
+##### wxpusher
+
+```json5
+"wxpusher": {
+    /* https://wxpusher.zjiecode.com */
+    "module": "wxpusher",
+    /* 是否启用推送 */
+    "enable": false,
+    /* 是否将多个账号的信息合并推送 */
+    "merge": false,
+    "APP_TOKEN": "",
+    "UID": ""
+}
+```
+
+要使用 wxpusher 的话需要填写 `APP_TOKEN`和`UID`，点击[wxpusher](http://wxpusher.zjiecode.com/admin) 登陆创建应用获取`APP_TOKEN`，微信扫码后在用户列表获取`UID`
 
 #### 刷单曲播放量
 
@@ -597,16 +621,24 @@ cookie 获取方式：首先在网页登录[网易云音乐](https://music.163.c
             },
             "yunbei_task": {
                 "200002": {
-                    "songId": [25707139],
+                    "songId": [25707139]
                 }
             },
+            "musician_task": {
+                "755000": {
+                    "id": [25707139]
+                }
+            },
+            "daka": {
+                "enable": false
+            }
         }
     }
 ],
 // ...
 ```
 
-如上所示，在第二个账号中加入了 `setting` 字段，并填写与公共配置不同的地方。这样一来，两个账号就使用了不同的 server 酱推送，并使用不同的歌曲进行云贝推歌。
+如上所示，在第二个账号中加入了 `setting` 字段，并填写与公共配置不同的地方。上面配置的含义为，第二个账号使用了不同的 KEY 进行 server 酱的推送，使用不同的歌曲进行云贝推歌，使用不同的歌曲完成发布主创说任务，并且关闭了刷播放量的任务。具体的配置根据个人情况进行调整。
 
 #### 关注作者
 
@@ -652,7 +684,7 @@ docker exec -it qinglong bash
 ql repo https://github.com/chen310/NeteaseCloudMusicTasks.git "index.py" "" "py"
 ```
 
-### 生成配置文件
+### 更新配置文件
 
 ```shell
 task chen310_NeteaseCloudMusicTasks/ql_update.py
@@ -660,14 +692,21 @@ task chen310_NeteaseCloudMusicTasks/ql_update.py
 
 ### 安装依赖
 
+安装 Linux 依赖
+
 ```shell
-apk add python3-dev gcc libc-dev
+apk add --no-cache python3-dev gcc libc-dev
+```
+
+安装 Python 依赖
+
+```shell
 pip3 install requests json5 pycryptodomex
 ```
 
 ### 修改配置文件
 
-对配置文件 `config.json` 进行修改，修改方式可以参考[修改配置](#账号密码)
+在`脚本管理`中找到项目目录，对目录中的配置文件 `config.json` 进行修改，修改方式可以参考[修改配置](#账号密码)
 
 ### 更新代码
 
